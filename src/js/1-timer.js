@@ -34,7 +34,7 @@ const options = {
         position: 'topRight',
         iconUrl: 'https://cdn-icons-png.flaticon.com/512/1828/1828843.png', 
         iconText: '',
-        close: false,
+        
       });
       startBtn.disabled = true;
     } else {

@@ -17,28 +17,27 @@
     <main>
       <div class="container">
         <form class="form">
-          <label>
+          <label class="label">
             Delay (ms)
-            <input type="number" name="delay" required />
+            <input type="number" name="delay" class="input" required />
           </label>
-        
-          <fieldset>
-            <legend>State</legend>
-            <label>
-              <input type="radio" name="state" value="fulfilled" required />
+    
+          <fieldset class="fieldset">
+            <legend class="legend">State</legend>
+            <label class="radio-label">
+              <input type="radio" name="state" value="fulfilled" class="radio" required />
               Fulfilled
             </label>
-            <label>
-              <input type="radio" name="state" value="rejected" required />
+            <label class="radio-label">
+              <input type="radio" name="state" value="rejected" class="radio" required />
               Rejected
             </label>
           </fieldset>
-        
-          <button type="submit">Create notification</button>
+    
+          <button type="submit" class="btn">Create notification</button>
         </form>
       </div>
     </main>
-
     <load src="./partials/footer.html" />
     <script type="module" src="./js/2-snackbar.js"></script>
   </body>
