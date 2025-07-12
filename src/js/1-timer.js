@@ -1,74 +1,90 @@
-import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
-const startBtn = document.querySelector("button[data-start]");
+const startBtn = document.querySelector('button[data-start]');
+const dateInput = document.querySelector('#datetime-picker');
+const refs = {
+  days: document.querySelector('[data-days]'),
+  hours: document.querySelector('[data-hours]'),
+  minutes: document.querySelector('[data-minutes]'),
+  seconds: document.querySelector('[data-seconds]'),
+};
 
-const clockface= document.querySelector(".timer");
+let userSelectedDate = null;
+let timerId = null;
 
-class Timer {
+// Start неактивна
+startBtn.disabled = true;
 
-    constructor({ onTick }) {
-        this.onTick = onTick;
-        this.isActive = false;
-        this.intervalId = null;
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    const selectedDate = selectedDates[0];
+    const now = new Date();
 
-        this.init();
+    if (selectedDate <= now) {
+      iziToast.warning({
+        title: 'Увага',
+        message: 'Please choose a date in the future',
+        position: 'topRight',
+      });
+      startBtn.disabled = true;
+    } else {
+      userSelectedDate = selectedDate;
+      startBtn.disabled = false;
+    }
+  },
+};
+
+flatpickr(dateInput, options);
+
+startBtn.addEventListener('click', () => {
+  startBtn.disabled = true;
+  dateInput.disabled = true;
+
+  timerId = setInterval(() => {
+    const now = new Date();
+    const delta = userSelectedDate - now;
+
+    if (delta <= 0) {
+      clearInterval(timerId);
+      updateTimerUI({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      dateInput.disabled = false;
+      startBtn.disabled = true;
+      return;
     }
 
-    init() {
-        const time = this.getTimeComponent(0);
-        this.onTick(time);
-    }
+    const time = convertMs(delta);
+    updateTimerUI(time);
+  }, 1000);
+});
 
-    start() {
-        if(this.isActive) {
-            return;
-        }
-
-        this.isActive = true;
-        const startTime = Date.now();
-
-        this.intervalId = setInterval(() => {
-            const currentTime = Date.now();
-            const deltaTime = currentTime - startTime;
-
-            const time = this.getTimeComponent(deltaTime);
-            this.onTick(time);
-        }, 1000);
-    }
-
-    stop() {
-        clearInterval(this.intervalId);
-        this.init();
-        this.isActive = false;
-    }
-
-    getTimeComponent(time) {
-        const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-        const hours = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-        const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-        const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
-
-        return {days, hours, mins, secs };
-    }
-
-
-    pad(value) {
-        return String(value).padStart(2, "0");
-    }
+function updateTimerUI({ days, hours, minutes, seconds }) {
+  refs.days.textContent = addLeadingZero(days);
+  refs.hours.textContent = addLeadingZero(hours);
+  refs.minutes.textContent = addLeadingZero(minutes);
+  refs.seconds.textContent = addLeadingZero(seconds);
 }
 
-const time = new Timer({ onTick: updateClockface });
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
 
-startBtn.addEventListener("click", time.start.bind(time));
+function convertMs(ms) {
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
 
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor((ms % hour) / minute);
+  const seconds = Math.floor((ms % minute) / second);
 
-function updateClockface({days, hours, mins, secs }) {
-    document.querySelector('[data-days]').textContent = days;
-    document.querySelector('[data-hours]').textContent = hours;
-    document.querySelector('[data-minutes]').textContent = mins;
-    document.querySelector('[data-seconds]').textContent = secs;
-
+  return { days, hours, minutes, seconds };
 }
