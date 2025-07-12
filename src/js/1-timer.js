@@ -15,7 +15,7 @@ const refs = {
 let userSelectedDate = null;
 let timerId = null;
 
-// Start неактивна
+
 startBtn.disabled = true;
 
 const options = {
@@ -29,9 +29,12 @@ const options = {
 
     if (selectedDate <= now) {
       iziToast.warning({
-        title: 'Увага',
+        
         message: 'Please choose a date in the future',
         position: 'topRight',
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/1828/1828843.png', 
+        iconText: '',
+        close: false,
       });
       startBtn.disabled = true;
     } else {
