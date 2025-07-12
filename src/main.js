@@ -1,0 +1,1 @@
+@import url('./js/1-timer.js');
