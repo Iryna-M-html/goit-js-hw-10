@@ -2,9 +2,12 @@
   position: relative;
   display: inline-block;
   padding: 4px 8px;
-  margin-top: 32px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   border: 1px solid;
   border-radius: 8px;
+  background: #4e75ff;
+  color: #fff;
 }
 .back-link::before {
   content: '';
@@ -13,6 +16,7 @@
   left: 0;
   width: 16px;
   height: 16px;
+  
 
   background-repeat: no-repeat;
   background-position: center;
