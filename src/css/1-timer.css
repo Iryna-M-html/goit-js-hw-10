@@ -64,5 +64,13 @@
     padding: 8px 16px;
     width: 75px;
     height: 40px;
+    background: #4e75ff;
+    color: #fff;
+}
+.btn-timer:hover{
+    background: #6c8cff;
+}
+.btn-timer:disabled{
     background: #cfcfcf;
+    color: #989898;
 }
